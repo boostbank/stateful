@@ -1,0 +1,29 @@
+{
+  "name": "stateful",
+  "version": "0.1.0",
+  "description": "Global State Management JS",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/boostbank/stateful.git"
+  },
+  "devDependencies": {
+    "babel-cli": "6.26.0",
+    "babel-core": "6.26.0",
+    "babel-eslint": "8.2.2",
+    "babel-preset-es2015": "6.24.1",
+    "cross-env": "^5.1.4",
+    "gulp": "^3.9.1",
+    "jest": "^22.4.3",
+    "jsdoc": "^3.5.5"
+  },
+  "author": "boostbank",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/boostbank/stateful/issues"
+  },
+  "homepage": "https://github.com/boostbank/stateful#readme"
+}
