@@ -11,7 +11,9 @@ let instance = undefined;
 
 let currentStore = undefined;
 
-const states = [];
+let states = [];
+
+let subscribers = [];
 
 const getInstance = () => {
   if (instance === undefined) {
@@ -30,6 +32,12 @@ const pushToStack = newState => {
   }
 };
 
+const notify = currentStore => {
+  subscribers.forEach(subscriber => {
+    subscriber(currentStore);
+  });
+};
+
 /**
  * @module Stateful
  */
@@ -39,7 +47,7 @@ class Stateful {
   }
 
   createStore(store = {}, maxDepth = -1) {
-    currentStore = { ...store };
+    currentStore = Object.assign({}, store);
     pushToStack(currentStore);
     getInstance().maxDepth = maxDepth;
   }
@@ -51,17 +59,34 @@ class Stateful {
     }
   }
 
-  modify(modifier, payload) {
+  modify(modifier) {
     if (modifier && typeof modifier === FUNCTION) {
-      const newState = modifier(getInstance().getState(), payload);
+      const newState = modifier(getInstance().getState());
       if (
         newState !== currentStore &&
         newState !== undefined &&
         newState !== null &&
         typeof newState === OBJECT
       ) {
-        currentStore = { ...newState };
+        currentStore = newState;
+        notify(currentStore);
         pushToStack(currentStore);
+      }
+    }
+  }
+
+  subscribe(subscriber) {
+    if (subscriber && typeof subscriber === FUNCTION) {
+      subscribers.push(subscriber);
+    }
+  }
+
+  unsubscribe(subscriber) {
+    for (let i = 0; i < subscribers.length; i++) {
+      const currentSubscriber = subscribers[i];
+      if (subscriber === currentSubscriber) {
+        subscribers.splice(i, 1);
+        i = subscribers.length;
       }
     }
   }
@@ -73,7 +98,7 @@ class Stateful {
   }
 
   getState() {
-    return { ...currentStore };
+    return Object.assign({}, currentStore);
   }
 }
 
