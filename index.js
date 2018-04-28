@@ -3,6 +3,11 @@ main();
 
 function main() {
   stateful.createStore();
+
+  stateful.subscribe(state =>{
+    console.log(state);
+  });
+
   stateful.modify(state => {
     state.test = "gay";
     return state;
@@ -11,5 +16,4 @@ function main() {
     state.test = "aids";
     return state;
   });
-  console.log(stateful.getState());
 }
