@@ -57,6 +57,7 @@ class Stateful {
       pushToStack(currentStore);
       getInstance().maxDepth = maxDepth;
     }
+    return currentStore;
   }
 
   /**
