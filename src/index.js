@@ -52,9 +52,11 @@ class Stateful {
    * @param {number} maxDepth Max number of stores to keep in memory over time. Default -1
    */
   createStore(store = {}, maxDepth = -1) {
-    currentStore = Object.assign({}, store);
-    pushToStack(currentStore);
-    getInstance().maxDepth = maxDepth;
+    if (currentStore === undefined) {
+      currentStore = Object.assign({}, store);
+      pushToStack(currentStore);
+      getInstance().maxDepth = maxDepth;
+    }
   }
 
   /**
