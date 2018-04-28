@@ -1,13 +1,13 @@
 {
-  "name": "stateful",
+  "name": "@boostbank/stateful",
   "version": "0.1.0",
   "description": "Global State Management JS",
-  "main": "index.js",
+  "main": "lib/index.js",
   "scripts": {
     "test": "jest --env=jsdom --coverage",
     "test:no-coverage": "jest --env=jsdom",
     "docs": "jsdoc src -r -d lib/docs",
-    "build": "npm run docs && babel src/ -d lib",
+    "build": "babel src/ -d lib",
     "prepare": "npm run build"
   },
   "repository": {
