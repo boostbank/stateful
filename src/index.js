@@ -64,7 +64,7 @@ class Stateful {
    * Rolls back the state by one.
    */
   rollback() {
-    if (states.length >= 1) {
+    if (states.length > 1) {
       states.splice(states.length - 1, 1);
       currentStore = states[states.length - 1];
       notify(currentStore);
