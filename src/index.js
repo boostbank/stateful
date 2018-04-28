@@ -46,19 +46,32 @@ class Stateful {
     this.maxDepth = -1;
   }
 
+  /**
+   *
+   * @param {object} store The state store. Defaults to an empty object.
+   * @param {number} maxDepth Max number of stores to keep in memory over time. Default -1
+   */
   createStore(store = {}, maxDepth = -1) {
     currentStore = Object.assign({}, store);
     pushToStack(currentStore);
     getInstance().maxDepth = maxDepth;
   }
 
+  /**
+   * Rolls back the state by one.
+   */
   rollback() {
     if (states.length >= 1) {
       states.splice(states.length - 1, 1);
       currentStore = states[states.length - 1];
+      notify(currentStore);
     }
   }
 
+  /**
+   * Modifies state.
+   * @param {function} modifier
+   */
   modify(modifier) {
     if (modifier && typeof modifier === FUNCTION) {
       const newState = modifier(getInstance().getState());
@@ -75,12 +88,20 @@ class Stateful {
     }
   }
 
+  /**
+   * Subscribe to store changes.
+   * @param {function} subscriber
+   */
   subscribe(subscriber) {
     if (subscriber && typeof subscriber === FUNCTION) {
       subscribers.push(subscriber);
     }
   }
 
+  /**
+   * Unsubscribe from store changes.
+   * @param {function} subscriber
+   */
   unsubscribe(subscriber) {
     for (let i = 0; i < subscribers.length; i++) {
       const currentSubscriber = subscribers[i];
@@ -91,12 +112,19 @@ class Stateful {
     }
   }
 
+  /**
+   * Clear entire store.
+   */
   clear() {
     currentStore = {};
     states = [];
+    subscribers = [];
     pushToStack(currentStore);
   }
 
+  /**
+   * Get entire state.
+   */
   getState() {
     return Object.assign({}, currentStore);
   }
