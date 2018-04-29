@@ -1,6 +1,6 @@
 {
   "name": "@boostbank/stateful",
-  "version": "0.1.14",
+  "version": "0.1.15",
   "description": "Global State Management JS",
   "main": "lib/index.js",
   "scripts": {
