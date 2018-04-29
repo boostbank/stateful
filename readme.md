@@ -8,7 +8,19 @@ npm install @boostbank/stateful
 
 ## Creating a store.
 
+```javascript
+const {createStore} = require('@boostbank/stateful');
 
+// Initial state is something that can be passed in.
+// You can create a store with a max depth of rollback period.
+// This means you can create a max of how many states are retained to be rolled back.
+// This will allow you to keep memory more clear.
+// The default maxDepth is -1 (unlimited).
+// KEEP IN MIND: That createStore can only be called once.
+const withDefinedDepth = createStore({someStoreData: "Some initial store data"}, 10); // Depth of 10.
+const unlimitedDepth = createStore({someStoreData: "Some initial store data"}); // unlimited depth
+const default = createStore(); // Empty store object {} and ulimited depth.
+```
 
 ## Modifying State
 
