@@ -3,7 +3,7 @@
 ## Installation
 
 ```sh
-npm install @boostbank/stateful
+npm install @boostbank/stateful --save
 ```
 
 ## Creating a store.
