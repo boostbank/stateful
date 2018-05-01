@@ -1,6 +1,6 @@
 {
   "name": "@boostbank/stateful",
-  "version": "0.1.15",
+  "version": "0.1.16",
   "description": "Global State Management JS",
   "main": "lib/index.js",
   "scripts": {
@@ -28,7 +28,11 @@
     "jsdoc": "^3.5.5"
   },
   "author": "boostbank",
-  "license": "ISC",
+  "license": "MIT",
+  "keywords": [
+    "boostbank",
+    "stateful"
+  ],
   "bugs": {
     "url": "https://github.com/boostbank/stateful/issues"
   },

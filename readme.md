@@ -45,7 +45,7 @@ modify(state => {
 const { subscribe } = require("@boostbank/stateful");
 
 // Subscribe is a listener handler for when the store gets changed.
-// It will pass a copy of the current state (so don't worry about modifying state directly);
+// It will pass the current state in stateful. Do not modify it here.
 subscribe(state => {
   console.log(state);
 });
