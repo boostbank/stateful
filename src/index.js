@@ -1,4 +1,4 @@
-("use strict");
+"use strict";
 
 const OBJECT = "object";
 const BOOLEAN = "boolean";
