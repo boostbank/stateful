@@ -9,11 +9,11 @@ function main() {
   });
 
   stateful.modify(state => {
-    state.test = "gay";
+    state.test = "cool";
     return state;
   });
   stateful.modify(state => {
-    state.test = "aids";
+    state.test = "beans";
     return state;
   });
 }
