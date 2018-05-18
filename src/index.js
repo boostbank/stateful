@@ -61,7 +61,7 @@ class Stateful {
       pushToStack(this.states, this.currentStore);
       this.maxDepth = maxDepth;
     }
-    return this.currentStore;
+    return this;
   }
 
   /**
@@ -140,3 +140,4 @@ class Stateful {
 var initializer = getInstance();
 
 module.exports = initializer;
+
