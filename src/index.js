@@ -9,12 +9,6 @@ const UNDEFINED = "undefined";
 
 let instance = undefined;
 
-let currentStore = undefined;
-
-let states = [];
-
-let subscribers = [];
-
 const getInstance = () => {
   if (instance === undefined) {
     instance = new Stateful();
@@ -22,9 +16,9 @@ const getInstance = () => {
   return instance;
 };
 
-const pushToStack = newState => {
-  if (getInstance().maxDepth >= 0) {
-    if (states.length < getInstance().maxDepth) {
+const pushToStack = (states, newState) => {
+  if (states.maxDepth >= 0) {
+    if (states.length < states.maxDepth) {
       states.push(newState);
     }
   } else {
@@ -32,7 +26,7 @@ const pushToStack = newState => {
   }
 };
 
-const notify = currentStore => {
+const notify = (subscribers, currentStore) => {
   subscribers.forEach(subscriber => {
     subscriber(currentStore);
   });
@@ -43,7 +37,17 @@ const notify = currentStore => {
  */
 class Stateful {
   constructor() {
+    this.currentStore = undefined;
     this.maxDepth = -1;
+    this.subscribers = [];
+    this.states = [];
+    this.createStore = this.createStore.bind(this);
+    this.rollback = this.rollback.bind(this);
+    this.modify = this.modify.bind(this);
+    this.subscribe = this.subscribe.bind(this);
+    this.unsubscribe = this.unsubscribe.bind(this);
+    this.clear = this.clear.bind(this);
+    this.getState = this.getState.bind(this);
   }
 
   /**
@@ -52,22 +56,22 @@ class Stateful {
    * @param {number} maxDepth Max number of stores to keep in memory over time. Default -1
    */
   createStore(store = {}, maxDepth = -1) {
-    if (currentStore === undefined) {
-      currentStore = Object.assign({}, store);
-      pushToStack(currentStore);
-      getInstance().maxDepth = maxDepth;
+    if (this.currentStore === undefined) {
+      this.currentStore = Object.assign({}, store);
+      pushToStack(this.states, this.currentStore);
+      this.maxDepth = maxDepth;
     }
-    return currentStore;
+    return this.currentStore;
   }
 
   /**
    * Rolls back the state by one.
    */
   rollback() {
-    if (states.length > 1) {
-      states.splice(states.length - 1, 1);
-      currentStore = states[states.length - 1];
-      notify(currentStore);
+    if (this.states.length > 1) {
+      this.states.splice(this.states.length - 1, 1);
+      this.currentStore = this.states[this.states.length - 1];
+      notify(this.subscribers, this.currentStore);
     }
   }
 
@@ -77,16 +81,16 @@ class Stateful {
    */
   modify(modifier) {
     if (modifier && typeof modifier === FUNCTION) {
-      const newState = modifier(getInstance().getState());
+      const newState = modifier(this.getState());
       if (
-        newState !== currentStore &&
+        newState !== this.currentStore &&
         newState !== undefined &&
         newState !== null &&
         typeof newState === OBJECT
       ) {
-        currentStore = newState;
-        notify(currentStore);
-        pushToStack(currentStore);
+        this.currentStore = newState;
+        notify(this.subscribers, this.currentStore);
+        pushToStack(this.states, this.currentStore);
       }
     }
   }
@@ -97,7 +101,7 @@ class Stateful {
    */
   subscribe(subscriber) {
     if (subscriber && typeof subscriber === FUNCTION) {
-      subscribers.push(subscriber);
+      this.subscribers.push(subscriber);
     }
   }
 
@@ -106,11 +110,11 @@ class Stateful {
    * @param {function} subscriber
    */
   unsubscribe(subscriber) {
-    for (let i = 0; i < subscribers.length; i++) {
-      const currentSubscriber = subscribers[i];
+    for (let i = 0; i < this.subscribers.length; i++) {
+      const currentSubscriber = this.subscribers[i];
       if (subscriber === currentSubscriber) {
-        subscribers.splice(i, 1);
-        i = subscribers.length;
+        this.subscribers.splice(i, 1);
+        i = this.subscribers.length;
       }
     }
   }
@@ -119,17 +123,17 @@ class Stateful {
    * Clear entire store.
    */
   clear() {
-    currentStore = {};
-    states = [];
-    subscribers = [];
-    pushToStack(currentStore);
+    this.currentStore = {};
+    this.states = [];
+    this.subscribers = [];
+    pushToStack(this.states, this.currentStore);
   }
 
   /**
    * Get entire state.
    */
   getState() {
-    return Object.assign({}, currentStore);
+    return Object.assign({}, this.currentStore);
   }
 }
 
