@@ -1,4 +1,4 @@
-var {getInstance} = require('./stateful');
+const {getInstance} = require('./stateful');
 
 
 module.exports = getInstance();
