@@ -14,14 +14,34 @@ const subStores = {};
 
 const lookup = {};
 
+const checkForNumber = uid => {
+  const number = Number.parseInt(uid.charAt(0));
+  if (!Number.isNaN(number)) {
+    throw new Error("First character cannot start with number!");
+  }
+};
+
+const isValid = uid => {
+  return !/[~`!#$%\^&*+=\-\[\]\\';,/{}|\\":<>\?]/g.test(uid);
+};
+
 class SubStore {
   createSubStore(uid, store = {}, maxDepth = -1) {
     let subStore = undefined;
-    if (typeof uid === "string") {
+    if (typeof uid === "string" && uid.length > 0) {
+      checkForNumber(uid);
+      if (!isValid(uid)) {
+        throw new Error("UID cannot contain special characters!");
+      }
+      if (subStores.hasOwnProperty(uid)) {
+        throw new Error("That store already exists!");
+      }
       const stateful = newInstance();
       subStore = stateful.createStore(store, maxDepth);
       lookup[uid] = uid;
       subStores[uid] = subStore;
+    } else {
+      throw new Error("You must pass a unique identifier!");
     }
     return subStore;
   }
