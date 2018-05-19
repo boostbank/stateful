@@ -15,8 +15,7 @@ const subStores = {};
 const lookup = {};
 
 const checkForNumber = uid => {
-  const number = Number.parseInt(uid.charAt(0));
-  if (!Number.isNaN(number)) {
+  if (!isNaN(uid)) {
     throw new Error("First character cannot start with number!");
   }
 };
@@ -102,6 +101,14 @@ class SubStore {
     if (typeof uid === "string") {
       if (subStores.hasOwnProperty(uid)) {
         subStores[uid].clear();
+      }
+    }
+  }
+
+  subRollback(uid){
+    if (typeof uid === "string") {
+      if (subStores.hasOwnProperty(uid)) {
+        subStores[uid].rollback();
       }
     }
   }

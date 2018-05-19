@@ -1,3 +1,6 @@
+## Version 0.1.23
+> - Added rollback to a specific substore.
+
 ## Version 0.1.22
 > - Bug fix on unsubscribeFrom in substore.
 
