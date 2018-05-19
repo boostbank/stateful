@@ -90,7 +90,7 @@ class SubStore {
     }
   }
 
-  unsubscribeFrom(uid) {
+  unsubscribeFrom(uid, callback) {
     if (typeof uid === "string") {
       if (subStores.hasOwnProperty(uid)) {
         subStores[uid].unsubscribe(callback);

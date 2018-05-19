@@ -1,3 +1,6 @@
+## Version 0.1.22
+> - Bug fix on unsubscribeFrom in substore.
+
 ## Version 0.1.21
 > - Added hasSubStore method in substore.
 > - Subscribers get their own copy of the state.
