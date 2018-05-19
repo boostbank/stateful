@@ -4,14 +4,15 @@ const {
   lookup,
   subModify,
   getSubState,
-  subscribeTo
+  subscribeTo,
+  hasSubStore
 } = require("./src/substore");
 main();
 
 function main() {
   stateful.createStore({}, 2);
-  // createSubStore("test");
-
+  createSubStore("test");
+  console.log("Has substore:", hasSubStore(lookup().test));
   stateful.subscribe(state => {
     console.log(state);
   });
@@ -24,16 +25,16 @@ function main() {
     state.test = "beans";
     return state;
   });
-  // const registry = lookup();
+  const registry = lookup();
 
-  // subscribeTo(registry.test, state=>{
-  //   console.log("GOT EM", state);
-  // });
+  subscribeTo(registry.test, state=>{
+    console.log("GOT EM", state);
+  });
 
-  // subModify(registry.test, store => {
-  //   store.test = "I win";
-  //   return store;
-  // });
+  subModify(registry.test, store => {
+    store.test = "I win";
+    return store;
+  });
 
-  // console.log(getSubState(registry.test));
+  console.log(getSubState(registry.test));
 }
