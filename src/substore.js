@@ -15,8 +15,10 @@ const subStores = {};
 const lookup = {};
 
 const checkForNumber = uid => {
-  if (!isNaN(uid)) {
-    throw new Error("First character cannot start with number!");
+  if(uid.length >= 1){
+    if (!isNaN(uid.charAt(0))) {
+      throw new Error("First character cannot start with number!");
+    }
   }
 };
 
