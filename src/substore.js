@@ -64,6 +64,16 @@ class SubStore {
     return Object.assign({}, lookup);
   }
 
+  hasSubStore(uid) {
+    let has = false;
+
+    if (typeof uid === "string") {
+      has = subStores.hasOwnProperty(uid);
+    }
+
+    return has;
+  }
+
   subModify(uid, modifier) {
     if (typeof uid === "string") {
       if (subStores.hasOwnProperty(uid)) {
