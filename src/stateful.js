@@ -20,10 +20,6 @@ const newInstance = () => {
   return new Stateful();
 };
 
-const setStates = (stateful, newStates)=>{
-  stateful.states = newStates;
-};
-
 const pushToStack = (states, maxDepth, newState) => {
   if (maxDepth >= 0) {
     if (states.length < maxDepth) {
