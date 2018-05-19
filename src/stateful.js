@@ -16,13 +16,20 @@ const getInstance = () => {
   return instance;
 };
 
-const newInstance = ()=>{
+const newInstance = () => {
   return new Stateful();
 };
 
-const pushToStack = (states, newState) => {
-  if (states.maxDepth >= 0) {
-    if (states.length < states.maxDepth) {
+const setStates = (stateful, newStates)=>{
+  stateful.states = newStates;
+};
+
+const pushToStack = (states, maxDepth, newState) => {
+  if (maxDepth >= 0) {
+    if (states.length < maxDepth) {
+      states.push(newState);
+    } else {
+      states.shift();
       states.push(newState);
     }
   } else {
@@ -62,8 +69,8 @@ class Stateful {
   createStore(store = {}, maxDepth = -1) {
     if (this.currentStore === undefined) {
       this.currentStore = Object.assign({}, store);
-      pushToStack(this.states, this.currentStore);
       this.maxDepth = maxDepth;
+      pushToStack(this.states, this.maxDepth, this.currentStore);
     }
     return this;
   }
@@ -73,7 +80,7 @@ class Stateful {
    */
   rollback() {
     if (this.states.length > 1) {
-      this.states.splice(this.states.length - 1, 1);
+      this.states.pop();
       this.currentStore = this.states[this.states.length - 1];
       notify(this.subscribers, this.currentStore);
     }
@@ -94,7 +101,7 @@ class Stateful {
       ) {
         this.currentStore = newState;
         notify(this.subscribers, this.currentStore);
-        pushToStack(this.states, this.currentStore);
+        pushToStack(this.states, this.maxDepth, this.currentStore);
       }
     }
   }
@@ -130,7 +137,7 @@ class Stateful {
     this.currentStore = {};
     this.states = [];
     this.subscribers = [];
-    pushToStack(this.states, this.currentStore);
+    pushToStack(this.states, this.maxDepth, this.currentStore);
   }
 
   /**
@@ -141,5 +148,4 @@ class Stateful {
   }
 }
 
-module.exports = {getInstance, newInstance};
-
+module.exports = { getInstance, newInstance };

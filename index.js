@@ -9,8 +9,8 @@ const {
 main();
 
 function main() {
-  stateful.createStore();
-  createSubStore("test");
+  stateful.createStore({}, 2);
+  // createSubStore("test");
 
   stateful.subscribe(state => {
     console.log(state);
@@ -24,16 +24,16 @@ function main() {
     state.test = "beans";
     return state;
   });
-  const registry = lookup();
+  // const registry = lookup();
 
-  subscribeTo(registry.test, state=>{
-    console.log("GOT EM", state);
-  });
+  // subscribeTo(registry.test, state=>{
+  //   console.log("GOT EM", state);
+  // });
 
-  subModify(registry.test, store => {
-    store.test = "I win";
-    return store;
-  });
+  // subModify(registry.test, store => {
+  //   store.test = "I win";
+  //   return store;
+  // });
 
-  console.log(getSubState(registry.test));
+  // console.log(getSubState(registry.test));
 }
