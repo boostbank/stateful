@@ -96,7 +96,7 @@ class Stateful {
         typeof newState === OBJECT
       ) {
         this.currentStore = newState;
-        notify(this.subscribers, this.currentStore);
+        notify(this.subscribers, Object.assign({}, this.currentStore));
         pushToStack(this.states, this.maxDepth, this.currentStore);
       }
     }
