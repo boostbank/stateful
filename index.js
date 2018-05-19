@@ -10,7 +10,7 @@ main();
 
 function main() {
   stateful.createStore();
-  createSubStore("-test");
+  createSubStore("test");
 
   stateful.subscribe(state => {
     console.log(state);
