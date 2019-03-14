@@ -34,9 +34,9 @@ const pushToStack = (states, maxDepth, newState) => {
 };
 
 const notify = (subscribers, currentStore) => {
-  subscribers.forEach(subscriber => {
-    subscriber(currentStore);
-  });
+  for(let i = subscribers.length - 1; i >= 0; i--){
+    subscribers[i](currentStore);
+  }
 };
 
 /**
@@ -108,7 +108,7 @@ class Stateful {
    */
   subscribe(subscriber) {
     if (subscriber && typeof subscriber === FUNCTION) {
-      this.subscribers.push(subscriber);
+      this.subscribers.unshift(subscriber);
     }
   }
 
