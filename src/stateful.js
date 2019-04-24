@@ -7,6 +7,8 @@ const NUMBER = "number";
 const STRING = "string";
 const UNDEFINED = "undefined";
 
+const copy = require('./copy');
+
 let instance = undefined;
 
 const getInstance = () => {
@@ -64,7 +66,7 @@ class Stateful {
    */
   createStore(store = {}, maxDepth = -1) {
     if (this.currentStore === undefined) {
-      this.currentStore = Object.assign({}, store);
+      this.currentStore = copy(store);
       this.maxDepth = maxDepth;
       pushToStack(this.states, this.maxDepth, this.currentStore);
     }
@@ -96,7 +98,7 @@ class Stateful {
         typeof newState === OBJECT
       ) {
         this.currentStore = newState;
-        notify(this.subscribers, Object.assign({}, this.currentStore));
+        notify(this.subscribers, copy(this.currentStore));
         pushToStack(this.states, this.maxDepth, this.currentStore);
       }
     }
@@ -140,7 +142,7 @@ class Stateful {
    * Get entire state.
    */
   getState() {
-    return Object.assign({}, this.currentStore);
+    return copy(this.currentStore);
   }
 }
 

@@ -23,7 +23,7 @@ const checkForNumber = uid => {
 };
 
 const isValid = uid => {
-  return !/[~`!#$%\^&*+=\-\[\]\\';,/{}|\\":<>\?]/g.test(uid);
+  return !/[~`!#$%\^&*+=\[\]\\';,/{}|\\":<>\?]/g.test(uid);
 };
 
 class SubStore {
