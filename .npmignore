@@ -1,4 +1,5 @@
 .babelrc
-src
-tests
+src/
+tests/
 index.js
+.vscode/
