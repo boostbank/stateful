@@ -1,3 +1,5 @@
+## Version 0.1.25
+> - Fixing an IE 11 issue where Object.assign was not found. Using custom deep copy method instead.
 ## Version 0.1.24
 > - Fixing an issue on notifying subscribers, where it would notify a subscriber even after they unsubscribed.
 ## Version 0.1.23
