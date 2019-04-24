@@ -1,5 +1,6 @@
 "use strict";
 const { newInstance } = require("./stateful");
+const copy = require('./copy');
 
 let instance = undefined;
 
@@ -60,9 +61,9 @@ class SubStore {
 
   lookup(looker) {
     if (typeof looker === "function") {
-      looker(Object.assign({}, lookup));
+      looker(copy(lookup));
     }
-    return Object.assign({}, lookup);
+    return copy(lookup);
   }
 
   hasSubStore(uid) {
@@ -119,7 +120,7 @@ class SubStore {
     let state = undefined;
     if (typeof uid === "string") {
       if (subStores.hasOwnProperty(uid)) {
-        state = Object.assign({}, subStores[uid].currentStore);
+        state = copy(subStores[uid].currentStore);
       }
     }
     return state;
