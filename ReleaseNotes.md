@@ -1,3 +1,5 @@
+## Version 0.1.27
+> - Substore identifiers can be any string, removing restrictions.
 ## Version 0.1.26
 > - Fixing an IE 11 issue (substore) where Object.assign was not found. Using custom deep copy method instead.
 ## Version 0.1.25
