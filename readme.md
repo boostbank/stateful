@@ -22,8 +22,8 @@ const {createStore} = require('@boostbank/stateful');
 // The default maxDepth is -1 (unlimited).
 // KEEP IN MIND: That createStore can only be called once.
 const withDefinedDepth = createStore({someStoreData: "Some initial store data"}, 10); // Depth of 10.
-const unlimitedDepth = createStore({someStoreData: "Some initial store data"}); // unlimited depth
-const default = createStore(); // Empty store object {} and ulimited depth.
+const unlimitedDepth = createStore({someStoreData: "Some initial store data"}, -1); // unlimited depth
+const default = createStore(); // Empty store object {} and zero depth.
 ```
 
 ## Modifying State
