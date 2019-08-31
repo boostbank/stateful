@@ -37,7 +37,7 @@ class Stateful {
     this.maxDepth = -1;
     this.subscribers = [];
     this.states = [];
-    this.createStore = this.createStore.bind(this);
+    this.init = this.init.bind(this);
     this.rollback = this.rollback.bind(this);
     this.modify = this.modify.bind(this);
     this.subscribe = this.subscribe.bind(this);
