@@ -1,11 +1,11 @@
-var { getInstance, newInstance } = require("./../src/stateful");
-const stateful = getInstance();
+var Stateful = require("./../src/stateful");
+const stateful = new Stateful();
 describe("Stateful Tests", () => {
   beforeEach(() => {
     stateful.clear();
   });
 
-  stateful.createStore({}, 2);
+  stateful.init({}, 2);
 
   it("Should set the state", () => {
     stateful.modify(store => {
@@ -29,7 +29,7 @@ describe("Stateful Tests", () => {
   });
   it("Should subscribe to state change", () => {
     let testingStore = undefined;
-    stateful.createStore();
+    stateful.init();
     stateful.subscribe(store => {
       expect(testingStore).toEqual(store);
     });
@@ -47,7 +47,7 @@ describe("Stateful Tests", () => {
       expect(testingStore).toEqual(store);
     };
     let testingStore = undefined;
-    stateful.createStore();
+    stateful.init();
     stateful.subscribe(subscribeMethod);
     stateful.modify(store => {
       store.test = "test";
@@ -88,12 +88,12 @@ describe("Stateful Tests", () => {
     expect(stateful.getState().test).toBe("test");
   });
   it("Should make a new instance", () => {
-    const instance = newInstance();
-    expect(instance).not.toBe(getInstance());
-    expect(getInstance()).toBe(getInstance());
+    const instance = new Stateful();
+    expect(instance).not.toBe(stateful);
+    expect(stateful).toBe(stateful);
   });
   it("It should keep adding with no limit", () => {
-    const instance = newInstance();
+    const instance = new Stateful();
     instance.modify(store => {
       store.test = "test";
       return store;
@@ -111,12 +111,12 @@ describe("Stateful Tests", () => {
     expect(instance.getState().test).toBe("test3");
   });
   it("It should not modify state when not passing modifier as a function", () => {
-    const instance = newInstance();
+    const instance = new Stateful();
     instance.modify("test");
     expect(JSON.stringify(instance.getState())).toBe(JSON.stringify({}));
   });
   it("It should not modify when not passing an object", () => {
-    const instance = newInstance();
+    const instance = new Stateful();
     instance.modify(store => {
       store.test = "test3";
       return 1;
@@ -124,7 +124,7 @@ describe("Stateful Tests", () => {
     expect(JSON.stringify(instance.getState())).toBe(JSON.stringify({}));
   });
   it("It should not subscribe when not passing a function", () => {
-    const instance = newInstance();
+    const instance = new Stateful();
     instance.subscribe("test");
     instance.modify(store => {
       store.test = "test";
@@ -134,7 +134,7 @@ describe("Stateful Tests", () => {
   });
   it("It should not unsubscribe when not passing a subscriber", () => {
     let callCount = 0;
-    const instance = newInstance();
+    const instance = new Stateful();
     instance.subscribe(store=>{
       callCount++;
       expect(store.test).toBe("test");
