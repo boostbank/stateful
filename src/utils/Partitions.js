@@ -15,14 +15,6 @@ const getInstance = () => {
   return instance;
 };
 
-const createPartition = (id = DEFAULT_PARTITION, partitions, store = {}, depth = 0)=>{
-  const partition = new Partition();
-  const toCreate = new Stateful();
-  partition.setGlobal(toCreate.init(store, depth));
-  partitions[id] = partition;
-  return partition;
-};
-
 class Partitions {
   constructor() {
     this.partitions = {};
@@ -61,10 +53,9 @@ class Partitions {
 
   createSubStore(uid = "", store = {}, depth = 0, id = DEFAULT_PARTITION) {
     let created = false;
-    if (this.partitions[id] === undefined || this.partitions[id] === null) {
+    if (this.partitions[id] !== undefined && this.partitions[id] !== null) {
       const toCreate = new SubStore();
-      toCreate.init(uid, store, depth);
-      this.partitions[id] = toCreate;
+      this.partitions[id].setSubStore(toCreate.init(uid, store, depth));
       created = this.partitions[id] === toCreate;
     }
     return created;
@@ -72,7 +63,7 @@ class Partitions {
 
   get(id = DEFAULT_PARTITION) {
     let store = undefined;
-    if (this.partitions[id] !== undefined) {
+    if (this.partitions[id] !== undefined && this.partitions[id] !== null) {
       store = this.partitions[id];
     }
     return store;
