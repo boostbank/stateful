@@ -97,4 +97,13 @@ describe("Partition Tests", () => {
       Partitions.createSubStore("test");
     }).toThrowError();
   });
+
+  it("Doesn't get a bad store.", () => {
+    const created = Partitions.createPartition("test");
+    expect(created).toBe(true);
+    expect(Partitions.get("test")).not.toBe(null);
+    const store = Partitions.get(null);
+    expect(store).toBe(null);
+  });
+
 });
