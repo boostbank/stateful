@@ -9,19 +9,6 @@ const UNDEFINED = "undefined";
 
 const copy = require('./copy');
 
-let instance = undefined;
-
-const getInstance = () => {
-  if (instance === undefined) {
-    instance = new Stateful();
-  }
-  return instance;
-};
-
-const newInstance = () => {
-  return new Stateful();
-};
-
 const pushToStack = (states, maxDepth, newState) => {
   if (maxDepth >= 0) {
     if (states.length < maxDepth) {
@@ -62,9 +49,9 @@ class Stateful {
   /**
    *
    * @param {object} store The state store. Defaults to an empty object.
-   * @param {number} maxDepth Max number of stores to keep in memory over time. Default -1
+   * @param {number} maxDepth Max number of stores to keep in memory over time. Default 0
    */
-  createStore(store = {}, maxDepth = -1) {
+  init(store = {}, maxDepth = 0) {
     if (this.currentStore === undefined) {
       this.currentStore = copy(store);
       this.maxDepth = maxDepth;
@@ -146,4 +133,4 @@ class Stateful {
   }
 }
 
-module.exports = { getInstance, newInstance };
+module.exports = Stateful;

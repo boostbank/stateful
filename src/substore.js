@@ -4,13 +4,6 @@ const copy = require('./copy');
 
 let instance = undefined;
 
-const getInstance = () => {
-  if (instance === undefined) {
-    instance = new SubStore();
-  }
-  return instance;
-};
-
 const subStores = {};
 
 const lookup = {};
@@ -114,4 +107,4 @@ class SubStore {
   }
 }
 
-module.exports = getInstance();
+module.exports = SubStore;

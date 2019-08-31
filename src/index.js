@@ -1,4 +1,13 @@
 const {getInstance} = require('./stateful');
+const SubStore = require('./substore');
 
+const createStore = ()=>{
 
-module.exports = getInstance();
+};
+
+const createSubStore = ()=>{
+
+};
+
+module.exports = {createStore, createSubStore}
+exports = "";
