@@ -5,16 +5,16 @@ const DEFAULT_SCOPE = "stateful-shared";
 let instance = null;
 
 /**
- * @returns {Scopes}
+ * @returns {Partitions}
  */
 const getInstance = () => {
   if (instance === null || instance === undefined) {
-    instance = new Scopes();
+    instance = new Partitions();
   }
   return instance;
 };
 
-class Scopes {
+class Partitions {
   constructor() {
     this.scopes = {};
     this.createStore = this.createStore.bind(this);

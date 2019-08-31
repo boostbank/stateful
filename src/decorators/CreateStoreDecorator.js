@@ -1,4 +1,4 @@
-const Scopes = require("../utils/Scopes");
+const Scopes = require("../utils/Partitions");
 const uuid = require("uuid/v4");
 
 class CreateStoreDecorator {
