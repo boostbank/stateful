@@ -2,8 +2,6 @@
 const Stateful = require("./stateful");
 const copy = require('./copy');
 
-let instance = undefined;
-
 const subStores = {};
 
 const lookup = {};
