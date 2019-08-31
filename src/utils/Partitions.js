@@ -37,6 +37,7 @@ class Partitions {
 
   createStore(id = DEFAULT_PARTITION, store = {}, depth = 0) {
     let created = false;
+    let mainStore = null;
     if (this.partitions[id] !== undefined && this.partitions[id] !== null) {
       const working = this.partitions[id];
       if (working.global === null || working.global === undefined) {
@@ -44,15 +45,17 @@ class Partitions {
         working.setGlobal(toCreate.init(store, depth));
         this.partitions[id] = working;
         created = this.partitions[id].global === toCreate;
+        mainStore = this.partitions[id].global;
       } else {
         throw new Error(`You have already created a store on this partition! Partition: ${id}`);
       }
     }
-    return created;
+    return {created, store: mainStore};
   }
 
   createSubStore(id = DEFAULT_PARTITION, uid = "", store = {}, depth = 0) {
     let created = false;
+    let subStore = null;
     if (this.partitions[id] !== undefined && this.partitions[id] !== null) {
       const toCreate = new SubStore();
       const working = this.partitions[id];
@@ -60,15 +63,16 @@ class Partitions {
         working.setSubStore(toCreate.init(uid, store, depth));
         this.partitions[id] = working;
         created = working.subStore === toCreate.subStores[uid];
+        subStore = toCreate.subStores[uid];
       } else {
         throw new Error(`You have already created a subStore on this partition! Partition: ${id}`);
       }
     }
-    return created;
+    return {created, store: subStore};
   }
 
   get(id = DEFAULT_PARTITION) {
-    let store = undefined;
+    let store = null;
     if (this.partitions[id] !== undefined && this.partitions[id] !== null) {
       store = this.partitions[id];
     }
