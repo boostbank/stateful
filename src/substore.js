@@ -16,7 +16,7 @@ class SubStore {
   init(uid = undefined, store = {}, maxDepth = -1) {
     let subStore = undefined;
       if (!isValid(uid)) {
-        throw new Error("UID must be a string with at least 1 character.");
+        throw new Error("UID (subStoreId) must be a string with at least 1 character.");
       }
       if (this.subStores.hasOwnProperty(uid)) {
         throw new Error("That store already exists!");

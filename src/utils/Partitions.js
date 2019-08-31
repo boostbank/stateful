@@ -51,14 +51,15 @@ class Partitions {
     return created;
   }
 
-  createSubStore(uid = "", store = {}, depth = 0, id = DEFAULT_PARTITION) {
+  createSubStore(id = DEFAULT_PARTITION, uid = "", store = {}, depth = 0) {
     let created = false;
     if (this.partitions[id] !== undefined && this.partitions[id] !== null) {
       const toCreate = new SubStore();
       const working = this.partitions[id];
       if (working.subStore === null || working.global === undefined) {
-        this.partitions[id].setSubStore(toCreate.init(uid, store, depth));
-        created = this.partitions[id] === toCreate;
+        working.setSubStore(toCreate.init(uid, store, depth));
+        this.partitions[id] = working;
+        created = working.subStore === toCreate.subStores[uid];
       }
     }
     return created;
