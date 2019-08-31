@@ -30,8 +30,5 @@
   "bugs": {
     "url": "https://github.com/boostbank/stateful/issues"
   },
-  "homepage": "https://github.com/boostbank/stateful#readme",
-  "dependencies": {
-    "uuid": "^3.3.3"
-  }
+  "homepage": "https://github.com/boostbank/stateful#readme"
 }
