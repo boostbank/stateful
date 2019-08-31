@@ -1,6 +1,7 @@
 const { createPartition, createStore, createSubStore } = require("./src/index");
+const uuid = require('uuid/v4');
 
-const id = "2";
+const id = uuid();
 const created = createPartition(id);
 
 if (created) {
