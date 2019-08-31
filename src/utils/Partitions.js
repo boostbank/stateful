@@ -17,20 +17,30 @@ const getInstance = () => {
 
 class Partitions {
   constructor() {
+    this.locked = true;
     this.partitions = {};
     this.partitions[DEFAULT_PARTITION] = new Partition();
+    this.createPartition = this.createPartition.bind(this);
     this.createStore = this.createStore.bind(this);
+    this.createSubStore = this.createSubStore.bind(this);
     this.get = this.get.bind(this);
+    this.lock = this.lock.bind(this);
+    this.unlock = this.unlock.bind(this);
+    this.clear = this.clear.bind(this);
   }
 
   createPartition(id = DEFAULT_PARTITION) {
     let created = false;
-    if (this.partitions[id] === undefined || this.partitions[id] === null) {
-      const partition = new Partition();
-      this.partitions[id] = partition;
-      created = this.partitions[id] === partition;
-    } else {
-      throw new Error("Partition already exists!");
+    if(typeof id === "string"){
+      if (this.partitions[id] === undefined || this.partitions[id] === null) {
+        const partition = new Partition();
+        this.partitions[id] = partition;
+        created = this.partitions[id] === partition;
+      } else {
+        throw new Error("Partition already exists!");
+      }
+    }else{
+      throw new Error("You must use a string for the partition id!");
     }
     return created;
   }
@@ -87,6 +97,22 @@ class Partitions {
   getDefaultScope() {
     return DEFAULT_PARTITION;
   }
+
+  lock(){
+    this.locked = true;
+  }
+
+  unlock(){
+    this.locked = false;
+  }
+
+  clear(){
+    if(!this.locked){
+      this.partitions = {};
+      this.partitions[DEFAULT_PARTITION] = new Partition();
+    }
+  }
+
 }
 
 module.exports = getInstance();
