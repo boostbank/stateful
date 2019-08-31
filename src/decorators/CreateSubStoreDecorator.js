@@ -1,19 +1,18 @@
-const Scopes = require("../utils/Scopes");
-const uuid = require("uuid/v4");
+
+const Partitions = require("../utils/Partitions");
 
 class CreateSubStoreDecorator {
   constructor() {}
 
-  withScope(uid = "", store = {}, depth = 0) {
+  onPartition(id = "", uid = "", store = {}, depth = 0) {
     const id = uuid();
-    const created = Scopes.createSubStore(uid, store, depth, id);
+    const created = Partitions.createSubStore(uid, store, depth, id);
     return { created, id };
   }
 
-  shared(uid = "", store = {}, depth = 0) {
-    const id = Scopes.getDefaultScope();
-    const created = Scopes.createSubStore(uid, store, depth, id);
-    return { created, id };
+  global(uid = "", store = {}, depth = 0) {
+    const id = Partitions.getDefaultScope();
+    return Partitions.createSubStore(uid, store, depth, id);
   }
 }
 

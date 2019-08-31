@@ -1,5 +1,4 @@
 const Partitions = require("../utils/Partitions");
-const uuid = require("uuid/v4");
 
 class CreateStoreDecorator {
   constructor() {}
@@ -9,7 +8,7 @@ class CreateStoreDecorator {
     return Partitions.createStore(id, store, depth);
   }
 
-  sharedPartition(store = {}, depth = 0) {
+  global(store = {}, depth = 0) {
     const id = Partitions.getDefaultScope();
     return Partitions.createStore(id, store, depth);
   }

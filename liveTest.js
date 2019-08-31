@@ -5,5 +5,5 @@ const created = createPartition(id);
 
 if (created) {
   console.log(createStore.onPartition(id, {}));
-  console.log(createStore.sharedPartition({}));
+  console.log(createStore.global({}));
 }
