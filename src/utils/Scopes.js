@@ -1,4 +1,5 @@
 const Stateful = require("../stateful");
+const SubStore = require("../substore");
 const DEFAULT_SCOPE = "stateful-shared";
 
 let instance = null;
@@ -16,15 +17,26 @@ const getInstance = () => {
 class Scopes {
   constructor() {
     this.scopes = {};
-    this.create = this.create.bind(this);
+    this.createStore = this.createStore.bind(this);
     this.get = this.get.bind(this);
   }
 
-  create(store = {}, depth = 0, id = DEFAULT_SCOPE) {
+  createStore(store = {}, depth = 0, id = DEFAULT_SCOPE) {
     let created = false;
     if (this.scopes[id] === undefined || this.scopes[id] === null) {
       const toCreate = new Stateful();
       toCreate.init(store, depth);
+      this.scopes[id] = toCreate;
+      created = this.scopes[id] === toCreate;
+    }
+    return created;
+  }
+
+  createSubStore(uid = "", store = {}, depth = 0, id = DEFAULT_SCOPE) {
+    let created = false;
+    if (this.scopes[id] === undefined || this.scopes[id] === null) {
+      const toCreate = new SubStore();
+      toCreate.init(uid, store, depth);
       this.scopes[id] = toCreate;
       created = this.scopes[id] === toCreate;
     }

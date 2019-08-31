@@ -1,5 +1,5 @@
 "use strict";
-const { newInstance } = require("./stateful");
+const Stateful = require("./stateful");
 const copy = require('./copy');
 
 let instance = undefined;
@@ -13,7 +13,7 @@ const isValid = uid => {
 };
 
 class SubStore {
-  createSubStore(uid = undefined, store = {}, maxDepth = -1) {
+  init(uid = undefined, store = {}, maxDepth = -1) {
     let subStore = undefined;
       if (!isValid(uid)) {
         throw new Error("UID must be a string with at least 1 character.");
@@ -21,8 +21,8 @@ class SubStore {
       if (subStores.hasOwnProperty(uid)) {
         throw new Error("That store already exists!");
       }
-      const stateful = newInstance();
-      subStore = stateful.createStore(store, maxDepth);
+      const stateful = new Stateful();
+      subStore = stateful.init(store, maxDepth);
       lookup[uid] = uid;
       subStores[uid] = subStore;
     return subStore;

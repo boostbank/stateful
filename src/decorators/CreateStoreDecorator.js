@@ -6,13 +6,13 @@ class CreateStoreDecorator {
 
   withScope(store = {}, depth = 0) {
     const id = uuid();
-    const created = Scopes.create(store, depth, id);
+    const created = Scopes.createStore(store, depth, id);
     return { created, id };
   }
 
   shared(store = {}, depth = 0) {
     const id = Scopes.getDefaultScope();
-    const created = Scopes.create(store, depth, id);
+    const created = Scopes.createStore(store, depth, id);
     return { created, id };
   }
 }
