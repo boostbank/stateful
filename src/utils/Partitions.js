@@ -1,6 +1,6 @@
 const Stateful = require("../stateful");
 const SubStore = require("../substore");
-const DEFAULT_SCOPE = "stateful-shared";
+const DEFAULT_PARTITION = "stateful-shared";
 
 let instance = null;
 
@@ -21,7 +21,7 @@ class Partitions {
     this.get = this.get.bind(this);
   }
 
-  createStore(store = {}, depth = 0, id = DEFAULT_SCOPE) {
+  createStore(store = {}, depth = 0, id = DEFAULT_PARTITION) {
     let created = false;
     if (this.scopes[id] === undefined || this.scopes[id] === null) {
       const toCreate = new Stateful();
@@ -32,7 +32,7 @@ class Partitions {
     return created;
   }
 
-  createSubStore(uid = "", store = {}, depth = 0, id = DEFAULT_SCOPE) {
+  createSubStore(uid = "", store = {}, depth = 0, id = DEFAULT_PARTITION) {
     let created = false;
     if (this.scopes[id] === undefined || this.scopes[id] === null) {
       const toCreate = new SubStore();
@@ -43,7 +43,7 @@ class Partitions {
     return created;
   }
 
-  get(id = DEFAULT_SCOPE) {
+  get(id = DEFAULT_PARTITION) {
     let store = undefined;
     if (this.scopes[id] !== undefined) {
       store = this.scopes[id];
@@ -57,7 +57,7 @@ class Partitions {
    * @returns {String}
    */
   getDefaultScope() {
-    return DEFAULT_SCOPE;
+    return DEFAULT_PARTITION;
   }
 }
 
