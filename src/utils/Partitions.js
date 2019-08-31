@@ -1,7 +1,7 @@
 const Stateful = require("../stateful");
 const SubStore = require("../substore");
 const DEFAULT_PARTITION = "stateful-shared";
-const Partition = require('./Partition');
+const Partition = require("./Partition");
 
 let instance = null;
 
@@ -22,13 +22,13 @@ class Partitions {
     this.get = this.get.bind(this);
   }
 
-  createPartition(id = DEFAULT_PARTITION){
+  createPartition(id = DEFAULT_PARTITION) {
     let created = false;
-    if(this.partitions[id] === undefined || this.partitions[id] === null){
+    if (this.partitions[id] === undefined || this.partitions[id] === null) {
       const partition = new Partition();
-      this.partitions[id]= partition;
+      this.partitions[id] = partition;
       created = this.partitions[id] === partition;
-    }else{
+    } else {
       throw new Error("Partition already exists!");
     }
     return created;
@@ -36,17 +36,16 @@ class Partitions {
 
   createStore(id = DEFAULT_PARTITION, store = {}, depth = 0) {
     let created = false;
-      const possible = this.partitions[id];
-      if(possible !== null && possible !== undefined){
-        const working = possible;
-        if(working.global === null || working.global === undefined){
-          const toCreate = new Stateful();
-          working.setGlobal(toCreate.init(store, depth));
-          this.partitions[id] = working;
-          created = this.partitions[id].global === toCreate;
-        }else{
-          throw new Error("You have already created a global store!");
-        }
+    if (this.partitions[id] !== undefined && this.partitions[id] !== null) {
+      const working = this.partitions[id];
+      if (working.global === null || working.global === undefined) {
+        const toCreate = new Stateful();
+        working.setGlobal(toCreate.init(store, depth));
+        this.partitions[id] = working;
+        created = this.partitions[id].global === toCreate;
+      } else {
+        throw new Error("You have already created a global store!");
+      }
     }
     return created;
   }
@@ -55,8 +54,11 @@ class Partitions {
     let created = false;
     if (this.partitions[id] !== undefined && this.partitions[id] !== null) {
       const toCreate = new SubStore();
-      this.partitions[id].setSubStore(toCreate.init(uid, store, depth));
-      created = this.partitions[id] === toCreate;
+      const working = this.partitions[id];
+      if (working.subStore === null || working.global === undefined) {
+        this.partitions[id].setSubStore(toCreate.init(uid, store, depth));
+        created = this.partitions[id] === toCreate;
+      }
     }
     return created;
   }
