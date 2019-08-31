@@ -1,6 +1,7 @@
 const Stateful = require("../stateful");
 const SubStore = require("../substore");
 const DEFAULT_PARTITION = "stateful-shared";
+const Partition = require('./Partition');
 
 let instance = null;
 
@@ -14,6 +15,14 @@ const getInstance = () => {
   return instance;
 };
 
+const createPartition = (id = DEFAULT_PARTITION, partitions, store = {}, depth = 0)=>{
+  const partition = new Partition();
+  const toCreate = new Stateful();
+  partition.setGlobal(toCreate.init(store, depth));
+  partitions[id] = partition;
+  return partition;
+};
+
 class Partitions {
   constructor() {
     this.partitions = {};
@@ -21,15 +30,25 @@ class Partitions {
     this.get = this.get.bind(this);
   }
 
-  createStore(store = {}, depth = 0, id = DEFAULT_PARTITION) {
+  createStore(id = DEFAULT_PARTITION, store = {}, depth = 0) {
     let created = false;
     if (this.partitions[id] === undefined || this.partitions[id] === null) {
-      const toCreate = new Stateful();
-      toCreate.init(store, depth);
-      this.partitions[id] = toCreate;
-      created = this.partitions[id] === toCreate;
+      const partition = createPartition(id, this.partitions, store, depth);
+      this.partitions[id] = partition;
+      created = this.partitions[id] === partition;
+    }else{
+      const possible = this.partitions[id];
+      if(possible !== null && possible !== undefined){
+        const working = possible;
+        if(working.global === null || working.global === undefined){
+          const toCreate = new Stateful();
+          working.setGlobal(toCreate.init(store, depth));
+          this.partitions[id] = working;
+          created = this.partitions[id].global === toCreate;
+        }
+      }
     }
-    return created;
+    return {created, id};
   }
 
   createSubStore(uid = "", store = {}, depth = 0, id = DEFAULT_PARTITION) {
