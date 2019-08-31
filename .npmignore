@@ -1,7 +1,8 @@
 .babelrc
 src/
 tests/
-index.js
+liveTest.js
 .vscode/
 coverage/
 package-lock.json
+.gitignore
