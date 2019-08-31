@@ -26,7 +26,7 @@ class Partitions {
     this.get = this.get.bind(this);
     this.lock = this.lock.bind(this);
     this.unlock = this.unlock.bind(this);
-    this.clear = this.clear.bind(this);
+    this.reset = this.reset.bind(this);
   }
 
   createPartition(id = DEFAULT_PARTITION) {
@@ -106,10 +106,13 @@ class Partitions {
     this.locked = false;
   }
 
-  clear(){
-    if(!this.locked){
+  reset(){
+    if(this.locked){
+      throw new Error("You cannot clear this because its locked!");
+    }else{
       this.partitions = {};
       this.partitions[DEFAULT_PARTITION] = new Partition();
+      this.lock();
     }
   }
 

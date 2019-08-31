@@ -1,10 +1,17 @@
 const Partitions = require("../src/utils/Partitions");
 
-Partitions.unlock();
-
 describe("Partition Tests", () => {
   beforeEach(() => {
-    Partitions.clear();
+    Partitions.unlock();
+    Partitions.reset();
+  });
+
+  it("Locks", ()=>{
+    Partitions.lock();
+    expect(Partitions.locked).toBe(true);
+    expect(()=>{
+        Partitions.reset();
+    }).toThrowError();
   });
 
   it("Creates a global partition", () => {
@@ -78,7 +85,7 @@ describe("Partition Tests", () => {
     expect(storeCreate.store).not.toBe(null);
 
     expect(() => {
-      const storeCreate = Partitions.createSubStore("test", "test");
+      Partitions.createSubStore("test", "test");
     }).toThrowError();
   });
 
