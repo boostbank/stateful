@@ -2,36 +2,38 @@
 const Stateful = require("./stateful");
 const copy = require('./copy');
 
-const subStores = {};
-
-const lookup = {};
-
 const isValid = uid => {
   return typeof uid === "string" && uid.length > 0;
 };
 
 class SubStore {
+
+  constructor(){
+    this.subStores = {};
+    this.lookup = {};
+  }
+
   init(uid = undefined, store = {}, maxDepth = -1) {
     let subStore = undefined;
       if (!isValid(uid)) {
         throw new Error("UID must be a string with at least 1 character.");
       }
-      if (subStores.hasOwnProperty(uid)) {
+      if (this.subStores.hasOwnProperty(uid)) {
         throw new Error("That store already exists!");
       }
       const stateful = new Stateful();
       subStore = stateful.init(store, maxDepth);
-      lookup[uid] = uid;
-      subStores[uid] = subStore;
+      this.lookup[uid] = uid;
+      this.subStores[uid] = subStore;
     return subStore;
   }
 
   deleteSubStore(uid) {
     let deleted = false;
     if (typeof uid === "string") {
-      if (subStores.hasOwnProperty(uid)) {
-        delete subStores[uid];
-        deleted = !subStores.hasOwnProperty(uid);
+      if (this.subStores.hasOwnProperty(uid)) {
+        delete this.subStores[uid];
+        deleted = !this.subStores.hasOwnProperty(uid);
       }
     }
     return deleted;
@@ -39,16 +41,16 @@ class SubStore {
 
   lookup(looker) {
     if (typeof looker === "function") {
-      looker(copy(lookup));
+      looker(copy(this.lookup));
     }
-    return copy(lookup);
+    return copy(this.lookup);
   }
 
   hasSubStore(uid) {
     let has = false;
 
     if (typeof uid === "string") {
-      has = subStores.hasOwnProperty(uid);
+      has = this.subStores.hasOwnProperty(uid);
     }
 
     return has;
@@ -56,40 +58,40 @@ class SubStore {
 
   subModify(uid, modifier) {
     if (typeof uid === "string") {
-      if (subStores.hasOwnProperty(uid)) {
-        subStores[uid].modify(modifier);
+      if (this.subStores.hasOwnProperty(uid)) {
+        this.subStores[uid].modify(modifier);
       }
     }
   }
 
   subscribeTo(uid, callback) {
     if (typeof uid === "string") {
-      if (subStores.hasOwnProperty(uid)) {
-        subStores[uid].subscribe(callback);
+      if (this.subStores.hasOwnProperty(uid)) {
+        this.subStores[uid].subscribe(callback);
       }
     }
   }
 
   unsubscribeFrom(uid, callback) {
     if (typeof uid === "string") {
-      if (subStores.hasOwnProperty(uid)) {
-        subStores[uid].unsubscribe(callback);
+      if (this.subStores.hasOwnProperty(uid)) {
+        this.subStores[uid].unsubscribe(callback);
       }
     }
   }
 
   subClear(uid) {
     if (typeof uid === "string") {
-      if (subStores.hasOwnProperty(uid)) {
-        subStores[uid].clear();
+      if (this.subStores.hasOwnProperty(uid)) {
+        this.subStores[uid].clear();
       }
     }
   }
 
   subRollback(uid) {
     if (typeof uid === "string") {
-      if (subStores.hasOwnProperty(uid)) {
-        subStores[uid].rollback();
+      if (this.subStores.hasOwnProperty(uid)) {
+        this.subStores[uid].rollback();
       }
     }
   }
@@ -97,8 +99,8 @@ class SubStore {
   getSubState(uid) {
     let state = undefined;
     if (typeof uid === "string") {
-      if (subStores.hasOwnProperty(uid)) {
-        state = copy(subStores[uid].currentStore);
+      if (this.subStores.hasOwnProperty(uid)) {
+        state = copy(this.subStores[uid].currentStore);
       }
     }
     return state;
