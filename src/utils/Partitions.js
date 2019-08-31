@@ -18,6 +18,7 @@ const getInstance = () => {
 class Partitions {
   constructor() {
     this.partitions = {};
+    this.partitions[DEFAULT_PARTITION] = new Partition();
     this.createStore = this.createStore.bind(this);
     this.get = this.get.bind(this);
   }
