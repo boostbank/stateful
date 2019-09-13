@@ -52,6 +52,10 @@ const notify = (subscribers, currentStore, modifyCallback, who) => {
   }
 };
 
+const notifyOne = (subscriber, currentStore, modifyCallback, who) =>{
+  notify([subscriber], currentStore, modifyCallback, who);
+};
+
 /**
  * @module Stateful
  */
@@ -153,8 +157,8 @@ class Stateful {
   subscribe(subscriber) {
     if (subscriber && typeof subscriber === FUNCTION) {
       this.subscribers.unshift(subscriber);
-      // Pushing current state.
-      subscriber(this.getState());
+      // Update subscriber with current state.
+      notifyOne(subscriber, this.currentStore, ()=>{}, null);
     }
   }
 
