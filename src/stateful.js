@@ -22,9 +22,11 @@ const pushToStack = (states, maxDepth, newState) => {
   }
 };
 
-const notify = (subscribers, currentStore) => {
+const notify = (subscribers, currentStore, callback) => {
   for(let i = subscribers.length - 1; i >= 0; i--){
-    subscribers[i](currentStore);
+    subscribers[i](currentStore, ()=>{
+      callback();
+    });
   }
 };
 
@@ -63,11 +65,16 @@ class Stateful {
   /**
    * Rolls back the state by one.
    */
-  rollback() {
+  rollback(callback) {
+
+    if(!typeof callback === "function"){
+      callback = ()=>{};
+    }
+
     if (this.states.length > 1) {
       this.states.pop();
       this.currentStore = this.states[this.states.length - 1];
-      notify(this.subscribers, this.currentStore);
+      notify(this.subscribers, this.currentStore, callback);
     }
   }
 
@@ -75,7 +82,12 @@ class Stateful {
    * Modifies state.
    * @param {function} modifier
    */
-  modify(modifier) {
+  modify(modifier, callback) {
+
+    if(!typeof callback === "function"){
+      callback = ()=>{};
+    }
+
     if (modifier && typeof modifier === FUNCTION) {
       const newState = modifier(this.getState());
       if (
@@ -85,8 +97,8 @@ class Stateful {
         typeof newState === OBJECT
       ) {
         this.currentStore = newState;
-        notify(this.subscribers, copy(this.currentStore));
         pushToStack(this.states, this.maxDepth, this.currentStore);
+        notify(this.subscribers, copy(this.currentStore), callback);
       }
     }
   }
