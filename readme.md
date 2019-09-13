@@ -67,8 +67,6 @@ modify(store => {
 
 > Override and merge.
 
-> You can also just override the stores current state as well.
-
 ```javascript
 modify(store => {
   // You can use spreading, or Object.assign();
@@ -206,6 +204,37 @@ subModify("test", store=>{
 
 ```
 
+## Lookup syntax.
+
+> Using substores and typing a string is annoying.
+>
+> So you can us this syntax to lookup a substore id if its javascript json friendly.
+
+```javascript
+
+const { subModify, lookup } = require("@boostbank/stateful");
+
+  // Using a substore helper method with lookup.
+subModify(lookup().test, store=>{
+  store.someData = "newData";
+  return store;
+});
+
+```
+
+> If the lookup id string isn't friendly I guess you could use the [] syntax on an object.
+>
+> This is quite unnecessary because if you type the string, you might as well just use the string you typed.
+
+```javascript
+// Just more work but here this is.
+subModify(lookup().["1"], store=>{
+  store.someData = "newData";
+  return store;
+});
+
+```
+
 ## Modifying a substore async
 
 > Same rules apply as previously seen in modifying a stores data.
@@ -215,7 +244,7 @@ const { subModifyAsync } = require("@boostbank/stateful");
 
 const who = {};
 
-subModifyAsync(who, store=>{
+subModifyAsync(who, "test", store=>{
   store.someData = "test";
   return store;
 }, ()=>{
@@ -233,7 +262,7 @@ subModifyAsync(who, store=>{
 ```javascript
 const { subRollback } = require("@boostbank/stateful");
 
-subRollback();
+subRollback("test");
 ```
 
 ## Rolling back a substore async
@@ -244,7 +273,7 @@ const { subRollbackAsync } = require("@boostbank/stateful");
 const who = {};
 
 // Same idea as rollbackAsync;
-subRollbackAsync(who, ()=>{
+subRollbackAsync(who, "test", ()=>{
   // The async callback.
 });
 ```
