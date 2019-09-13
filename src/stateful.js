@@ -153,6 +153,8 @@ class Stateful {
   subscribe(subscriber) {
     if (subscriber && typeof subscriber === FUNCTION) {
       this.subscribers.unshift(subscriber);
+      // Pushing current state.
+      subscriber(this.getState());
     }
   }
 
