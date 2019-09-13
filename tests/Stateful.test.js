@@ -31,7 +31,7 @@ describe("Stateful Tests", () => {
     let testingStore = undefined;
     stateful.createStore();
     stateful.subscribe(store => {
-      expect(testingStore).toEqual(store);
+      expect(store).not.toBe(undefined);
     });
     stateful.modify(store => {
       store.test = "test";
@@ -40,11 +40,11 @@ describe("Stateful Tests", () => {
     });
     expect(stateful.getState().test).toBe("test");
   });
-  it("Should subscribe to state change then unsubscrive and not recieve the change", () => {
+  it("Should subscribe to state change then unsubscribe and not recieve the change", () => {
     let callCount = 0;
     const subscribeMethod = store => {
       callCount++;
-      expect(testingStore).toEqual(store);
+      expect(store).not.toBe(undefined);
     };
     let testingStore = undefined;
     stateful.createStore();
@@ -60,7 +60,7 @@ describe("Stateful Tests", () => {
       store.test = "test2";
       return store;
     });
-    expect(callCount).toBe(1);
+    expect(callCount).toBe(2);
   });
   it("Should clear the state", () => {
     stateful.modify(store => {
@@ -89,7 +89,6 @@ describe("Stateful Tests", () => {
   });
 
   it("Should rollback the state async", done => {
-
     const who = {};
 
     stateful.modify(store => {
@@ -102,19 +101,18 @@ describe("Stateful Tests", () => {
       return store;
     });
 
-    stateful.subscribe((store, modified)=>{
+    stateful.subscribe((store, modified) => {
       modified(who);
     });
 
     expect(stateful.getState().test).toBe("test2");
-    stateful.rollbackAsync(who, ()=>{
+    stateful.rollbackAsync(who, () => {
       expect(stateful.getState().test).toBe("test");
       done();
     });
   });
 
   it("Should rollback the state async no callback", () => {
-
     const who = {};
 
     stateful.modify(store => {
@@ -127,17 +125,17 @@ describe("Stateful Tests", () => {
       return store;
     });
 
-    stateful.subscribe((store, modified)=>{
+    stateful.subscribe((store, modified) => {
       modified(null);
     });
 
     expect(stateful.getState().test).toBe("test2");
-    stateful.rollbackAsync(who, ()=>{
+    stateful.rollbackAsync(who, () => {
       throw new Error("This should not be called");
     });
     expect(stateful.getState().test).toBe("test");
   });
-  
+
   it("Should make a new instance", () => {
     const instance = newInstance();
     expect(instance).not.toBe(getInstance());
@@ -183,12 +181,18 @@ describe("Stateful Tests", () => {
     });
     expect(instance.getState().test).toBe("test");
   });
-  it("It should not unsubscribe when not passing a subscriber", () => {
+  it("It should not unsubscribe when not passing a subscriber", done => {
     let callCount = 0;
     const instance = newInstance();
-    instance.subscribe(store=>{
+    instance.subscribe(store => {
+      if (callCount > 0) {
+        expect(store.test).toBe("test");
+      }
       callCount++;
-      expect(store.test).toBe("test");
+      if(callCount >= 3){
+        expect(callCount).toBe(3);
+        done();
+      }
     });
     instance.modify(store => {
       store.test = "test";
@@ -199,43 +203,56 @@ describe("Stateful Tests", () => {
       store.test = "test";
       return store;
     });
-    expect(callCount).toBe(2);
   });
 
   it("It should modify async", done => {
+    let callCount = 0;
+
     const who = {};
 
     const instance = newInstance();
-    instance.subscribe((store, modified)=>{
-      expect(store.test).toBe("test");
-      modified(who);
+    instance.subscribe((store, modified) => {
+      if (callCount > 0) {
+        expect(store.test).toBe("test");
+        modified(who);
+      }
+      callCount++;
     });
-    instance.modifyAsync(who, store => {
-      store.test = "test";
-      return store;
-    }, ()=>{
-      done();
-    });
+    instance.modifyAsync(
+      who,
+      store => {
+        store.test = "test";
+        return store;
+      },
+      () => {
+        done();
+      }
+    );
   });
 
   it("It should modify async and not callback", () => {
+    let callCount = 0;
     const instance = newInstance();
 
     const who = {};
 
-    instance.subscribe((store, modified)=>{
-      expect(store.test).toBe("test");
-      modified(null);
+    instance.subscribe((store, modified) => {
+      if (callCount > 0) {
+        expect(store.test).toBe("test");
+        modified(null);
+      }
     });
-    instance.modifyAsync(who, store => {
-      store.test = "test";
-      return store;
-    }, ()=>{
-      throw new Error("This should not be called.");
-    });
+    instance.modifyAsync(
+      who,
+      store => {
+        store.test = "test";
+        return store;
+      },
+      () => {
+        throw new Error("This should not be called.");
+      }
+    );
 
-    expect(instance.getState()).toEqual({test: "test"});
-
+    expect(instance.getState()).toEqual({ test: "test" });
   });
-
 });
