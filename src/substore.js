@@ -4,6 +4,9 @@ const copy = require('./copy');
 
 let instance = undefined;
 
+/**
+ * @returns {SubStore}
+ */
 const getInstance = () => {
   if (instance === undefined) {
     instance = new SubStore();
@@ -20,6 +23,21 @@ const isValid = uid => {
 };
 
 class SubStore {
+
+  constructor(){
+    this.createSubStore = this.createSubStore.bind(this);
+    this.deleteSubStore = this.deleteSubStore.bind(this);
+    this.lookup = this.lookup.bind(this);
+    this.hasSubStore = this.hasSubStore.bind(this);
+    this.subModify = this.subModify.bind(this);
+    this.subModifyAsync = this.subModifyAsync.bind(this);
+    this.subscribeTo = this.subscribeTo.bind(this);
+    this.unsubscribeFrom = this.unsubscribeFrom.bind(this);
+    this.subClear = this.subClear.bind(this);
+    this.subRollback = this.subRollback.bind(this);
+    this.getSubState = this.getSubState.bind(this);
+  }
+
   createSubStore(uid = undefined, store = {}, maxDepth = -1) {
     let subStore = undefined;
       if (!isValid(uid)) {
@@ -63,12 +81,16 @@ class SubStore {
     return has;
   }
 
-  subModify(uid, modifier) {
+  subModify(uid, modifier, callback, who) {
     if (typeof uid === "string") {
       if (subStores.hasOwnProperty(uid)) {
-        subStores[uid].modify(modifier);
+        subStores[uid].modify(modifier, callback, who);
       }
     }
+  }
+
+  subModifyAsync(who, uid, modifier, callback){
+    this.subModify(uid, modifier, callback, who);
   }
 
   subscribeTo(uid, callback) {
@@ -95,12 +117,16 @@ class SubStore {
     }
   }
 
-  subRollback(uid) {
+  subRollback(uid, callback, who) {
     if (typeof uid === "string") {
       if (subStores.hasOwnProperty(uid)) {
-        subStores[uid].rollback();
+        subStores[uid].rollback(callback, who);
       }
     }
+  }
+
+  subRollbackAsync(who, uid, callback){
+    this.subRollback(uid, callback, who);
   }
 
   getSubState(uid) {
