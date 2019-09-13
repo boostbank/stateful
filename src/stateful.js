@@ -11,6 +11,9 @@ const copy = require('./copy');
 
 let instance = undefined;
 
+/**
+ * @returns {Stateful} The singleton.
+ */
 const getInstance = () => {
   if (instance === undefined) {
     instance = new Stateful();
@@ -18,6 +21,10 @@ const getInstance = () => {
   return instance;
 };
 
+
+/**
+ * @returns {Stateful} A new instance.
+ */
 const newInstance = () => {
   return new Stateful();
 };
@@ -35,10 +42,18 @@ const pushToStack = (states, maxDepth, newState) => {
   }
 };
 
-const notify = (subscribers, currentStore) => {
+const notify = (subscribers, currentStore, modifyCallback, who) => {
   for(let i = subscribers.length - 1; i >= 0; i--){
-    subscribers[i](currentStore);
+    subscribers[i](currentStore, whoWasModified=>{
+      if(who === whoWasModified){
+        modifyCallback();
+      }
+    });
   }
+};
+
+const notifyOne = (subscriber, currentStore, modifyCallback, who) =>{
+  notify([subscriber], currentStore, modifyCallback, who);
 };
 
 /**
@@ -52,7 +67,9 @@ class Stateful {
     this.states = [];
     this.createStore = this.createStore.bind(this);
     this.rollback = this.rollback.bind(this);
+    this.rollbackAsync = this.rollbackAsync.bind(this);
     this.modify = this.modify.bind(this);
+    this.modifyAsync = this.modifyAsync.bind(this);
     this.subscribe = this.subscribe.bind(this);
     this.unsubscribe = this.unsubscribe.bind(this);
     this.clear = this.clear.bind(this);
@@ -64,7 +81,7 @@ class Stateful {
    * @param {object} store The state store. Defaults to an empty object.
    * @param {number} maxDepth Max number of stores to keep in memory over time. Default -1
    */
-  createStore(store = {}, maxDepth = -1) {
+  createStore(store = {}, maxDepth = 0) {
     if (this.currentStore === undefined) {
       this.currentStore = copy(store);
       this.maxDepth = maxDepth;
@@ -75,21 +92,40 @@ class Stateful {
 
   /**
    * Rolls back the state by one.
+   * @param {funtion} callback async callback.
+   * @param {any} who Who is modifying.
    */
-  rollback() {
+  rollback(callback, who) {
     if (this.states.length > 1) {
+
+      const modifyCallback = typeof callback === "function" ? callback : ()=>{};
+
       this.states.pop();
       this.currentStore = this.states[this.states.length - 1];
-      notify(this.subscribers, this.currentStore);
+      notify(this.subscribers, this.currentStore, modifyCallback, who);
     }
   }
 
   /**
-   * Modifies state.
-   * @param {function} modifier
+   * Same as rollback but decorated for ease of use.
+   * @param {*} who Who is modifying.
+   * @param {function} callback  async callback.
    */
-  modify(modifier) {
+  rollbackAsync(who, callback){
+    this.rollback(callback, who);
+  }
+
+  /**
+   * Modifies state.
+   * @param {function} modifier Modifier function
+   * @param {function} callback The async callback function when done.
+   * @param {*} who The object or identifier that is modifying. 
+   */
+  modify(modifier, callback, who) {
     if (modifier && typeof modifier === FUNCTION) {
+
+      const modifyCallback = typeof callback === "function" ? callback : ()=>{};
+
       const newState = modifier(this.getState());
       if (
         newState !== this.currentStore &&
@@ -98,10 +134,20 @@ class Stateful {
         typeof newState === OBJECT
       ) {
         this.currentStore = newState;
-        notify(this.subscribers, copy(this.currentStore));
+        notify(this.subscribers, copy(this.currentStore), modifyCallback, who);
         pushToStack(this.states, this.maxDepth, this.currentStore);
       }
     }
+  }
+
+  /**
+   * Same as modify, but decorated for ease of use.
+   * @param {*} who The object or identifier that is modifying. 
+   * @param {function} modifier The modifier function.
+   * @param {function} callback The async callback function when done.
+   */
+  modifyAsync(who, modifier, callback){
+    this.modify(modifier, callback, who);
   }
 
   /**
@@ -111,6 +157,8 @@ class Stateful {
   subscribe(subscriber) {
     if (subscriber && typeof subscriber === FUNCTION) {
       this.subscribers.unshift(subscriber);
+      // Update subscriber with current state.
+      notifyOne(subscriber, this.currentStore, ()=>{}, null);
     }
   }
 
