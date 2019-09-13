@@ -38,7 +38,7 @@ class SubStore {
     this.getSubState = this.getSubState.bind(this);
   }
 
-  createSubStore(uid = undefined, store = {}, maxDepth = -1) {
+  createSubStore(uid = undefined, store = {}, maxDepth = 0) {
     let subStore = undefined;
       if (!isValid(uid)) {
         throw new Error("UID must be a string with at least 1 character.");

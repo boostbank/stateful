@@ -77,7 +77,7 @@ class Stateful {
    * @param {object} store The state store. Defaults to an empty object.
    * @param {number} maxDepth Max number of stores to keep in memory over time. Default -1
    */
-  createStore(store = {}, maxDepth = -1) {
+  createStore(store = {}, maxDepth = 0) {
     if (this.currentStore === undefined) {
       this.currentStore = copy(store);
       this.maxDepth = maxDepth;
