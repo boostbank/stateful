@@ -42,11 +42,11 @@ const pushToStack = (states, maxDepth, newState) => {
   }
 };
 
-const notify = (subscribers, currentStore, who) => {
+const notify = (subscribers, currentStore, modifyCallback, who) => {
   for(let i = subscribers.length - 1; i >= 0; i--){
     subscribers[i](currentStore, whoWasModified=>{
       if(who === whoWasModified){
-
+        modifyCallback();
       }
     });
   }
