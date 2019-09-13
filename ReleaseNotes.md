@@ -1,3 +1,6 @@
+## Version 1.0.0
+> - Added async callback methods and releasing polished version.
+
 ## Version 0.1.27
 > - Substore identifiers can be any string, removing restrictions.
 ## Version 0.1.26
