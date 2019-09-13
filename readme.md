@@ -21,7 +21,7 @@ const {createStore} = require('@boostbank/stateful');
 // You can create a store with a max depth of rollback period.
 // This means you can create a max of how many states are retained to be rolled back.
 // This will allow you to keep memory more clear.
-// The default maxDepth is -1 (No depth). Any number <= 0 will have no depth.
+// The default maxDepth is 0; Unlimited depth is -1;
 // KEEP IN MIND: That createStore can only be called once.
 const withDefinedDepth = createStore({someStoreData: "Some initial store data"}, 10); // Depth of 10. (Saves up to 10 versions)
 const unlimitedDepth = createStore({someStoreData: "Some initial store data"}, -1); // Unlimited depth (Unlimited versions)
