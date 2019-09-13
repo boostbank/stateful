@@ -1,4 +1,6 @@
-## Stateful is a global store to keep state globally.
+## About
+
+> Stateful is a in-memory storage solution to keep state in your applications.
 
 ## Installation
 
@@ -26,7 +28,7 @@ const noDepth = createStore({someStoreData: "Some initial store data"}, -1); // 
 const default = createStore(); // Empty store object {} and No depth.
 ```
 
-## Subscribing to state
+## Subscribing to a store
 
 ```javascript
 const { subscribe } = require("@boostbank/stateful");
@@ -38,7 +40,7 @@ subscribe(store => {
 });
 ```
 
-## Modifying State
+## Modifying a store
 
 > You may only modify state by the modify method.
 
@@ -129,7 +131,7 @@ subscribe((store, modified) => {
 ```
 > This will become more apparent, in `react-stateful` and in your `React` apps;
 
-## Rolling back state
+## Rolling back a store
 
 > Rolling back the state will do exactly what you think it will.
 
@@ -143,7 +145,7 @@ const { rollback } = require("@boostbank/stateful");
 rollback();
 ```
 
-## Rolling back state async.
+## Rolling back a store async.
 
 ```javascript
 const { rollbackAsync } = require("@boostbank/stateful");
@@ -177,6 +179,14 @@ const subStore = createSubStore("test", {someData: "test"});
 createSubStore("test", {someData: "test"});
 ```
 
+## Deleting a substore
+
+```javascript
+const { deleteSubStore } = require("@boostbank/stateful");
+
+deleteSubStore("test");
+```
+
 ## Modifying a substore
 
 > Using the example from the previous entry we created a subStore with 
@@ -196,13 +206,25 @@ subModify("test", store=>{
 
 ```
 
-## Modifying a substore async.
+## Modifying a substore async
 
 > Same rules apply as previously seen in modifying a stores data.
 
 ```javascript
+const { subModifyAsync } = require("@boostbank/stateful");
+
+const who = {};
+
+subModifyAsync(who, store=>{
+  store.someData = "test";
+  return store;
+}, ()=>{
+  // Callback
+});
 
 ```
+
+> Again this these async features are really meant to support React, but it could be used for anything that is async.
 
 ## Rolling back a substore
 
@@ -212,4 +234,17 @@ subModify("test", store=>{
 const { subRollback } = require("@boostbank/stateful");
 
 subRollback();
+```
+
+## Rolling back a substore async
+
+```javascript
+const { subRollbackAsync } = require("@boostbank/stateful");
+
+const who = {};
+
+// Same idea as rollbackAsync;
+subRollbackAsync(who, ()=>{
+  // The async callback.
+});
 ```
