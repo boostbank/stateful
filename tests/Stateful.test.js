@@ -85,7 +85,7 @@ describe("Stateful Tests", () => {
     stateful.rollback();
     expect(stateful.getState().test).toBe("test");
     stateful.rollback();
-    expect(stateful.getState().test).toBe("test");
+    expect(stateful.getState().test).toBe(undefined);
   });
 
   it("Should rollback the state async", done => {

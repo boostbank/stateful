@@ -7,7 +7,7 @@ const NUMBER = "number";
 const STRING = "string";
 const UNDEFINED = "undefined";
 
-const copy = require('./copy');
+const deepCopy = require('./deep-copy');
 
 let instance = undefined;
 
@@ -44,7 +44,7 @@ const pushToStack = (states, maxDepth, newState) => {
 
 const notify = (subscribers, currentStore, modifyCallback, who) => {
   for(let i = subscribers.length - 1; i >= 0; i--){
-    subscribers[i](currentStore, whoWasModified=>{
+    subscribers[i](deepCopy(currentStore), whoWasModified=>{
       if(who === whoWasModified){
         modifyCallback();
       }
@@ -53,7 +53,7 @@ const notify = (subscribers, currentStore, modifyCallback, who) => {
 };
 
 const notifyOne = (subscriber, currentStore, modifyCallback, who) =>{
-  notify([subscriber], currentStore, modifyCallback, who);
+  notify([subscriber], deepCopy(currentStore), modifyCallback, who);
 };
 
 /**
@@ -61,7 +61,7 @@ const notifyOne = (subscriber, currentStore, modifyCallback, who) =>{
  */
 class Stateful {
   constructor() {
-    this.currentStore = undefined;
+    this.currentStore = {};
     this.maxDepth = -1;
     this.subscribers = [];
     this.states = [];
@@ -83,7 +83,7 @@ class Stateful {
    */
   createStore(store = {}, maxDepth = 0) {
     if (this.currentStore === undefined) {
-      this.currentStore = copy(store);
+      this.currentStore = deepCopy(store);
       this.maxDepth = maxDepth;
       pushToStack(this.states, this.maxDepth, this.currentStore);
     }
@@ -133,8 +133,8 @@ class Stateful {
         newState !== null &&
         typeof newState === OBJECT
       ) {
-        this.currentStore = newState;
-        notify(this.subscribers, copy(this.currentStore), modifyCallback, who);
+        this.currentStore = deepCopy(newState);
+        notify(this.subscribers, this.currentStore, modifyCallback, who);
         pushToStack(this.states, this.maxDepth, this.currentStore);
       }
     }
@@ -190,7 +190,7 @@ class Stateful {
    * Get entire state.
    */
   getState() {
-    return copy(this.currentStore);
+    return deepCopy(this.currentStore);
   }
 }
 
