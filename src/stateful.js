@@ -7,7 +7,7 @@ const NUMBER = "number";
 const STRING = "string";
 const UNDEFINED = "undefined";
 
-const copy = require('./copy');
+const deepCopy = require('./deep-copy');
 
 let instance = undefined;
 
@@ -83,7 +83,7 @@ class Stateful {
    */
   createStore(store = {}, maxDepth = 0) {
     if (this.currentStore === undefined) {
-      this.currentStore = copy(store);
+      this.currentStore = deepCopy(store);
       this.maxDepth = maxDepth;
       pushToStack(this.states, this.maxDepth, this.currentStore);
     }
@@ -133,8 +133,8 @@ class Stateful {
         newState !== null &&
         typeof newState === OBJECT
       ) {
-        this.currentStore = newState;
-        notify(this.subscribers, copy(this.currentStore), modifyCallback, who);
+        this.currentStore = deepCopy(newState);
+        notify(this.subscribers, deepCopy(this.currentStore), modifyCallback, who);
         pushToStack(this.states, this.maxDepth, this.currentStore);
       }
     }
@@ -190,7 +190,7 @@ class Stateful {
    * Get entire state.
    */
   getState() {
-    return copy(this.currentStore);
+    return deepCopy(this.currentStore);
   }
 }
 
