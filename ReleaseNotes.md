@@ -1,3 +1,7 @@
+## Version 1.0.1
+> - Fixed copy from shallow to deep to fix memory leak issues dealing with references.
+> - Fixing all methods which had a chance of a memory leak using the old copy.
+
 ## Version 1.0.0
 > - Added async callback methods and releasing polished version.
 > - When you subscribe you get the current state from a store.
