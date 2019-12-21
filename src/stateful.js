@@ -61,7 +61,7 @@ const notifyOne = (subscriber, currentStore, modifyCallback, who) =>{
  */
 class Stateful {
   constructor() {
-    this.currentStore = undefined;
+    this.currentStore = {};
     this.maxDepth = -1;
     this.subscribers = [];
     this.states = [];

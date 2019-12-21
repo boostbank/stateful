@@ -42,7 +42,6 @@ describe("Stateful Tests", () => {
 
     it("Should not copy a function.", ()=>{
         const func = (test)=>{};
-        console.log(func);
         const copied = deepCopy(func);
         expect(copied).toBe(func);
     });
