@@ -25,8 +25,8 @@ const getInstance = () => {
 /**
  * @returns {Stateful} A new instance.
  */
-const newInstance = (store = {}) => {
-  return new Stateful().createStore(store);
+const newInstance = () => {
+  return new Stateful();
 };
 
 const pushToStack = (states, maxDepth, newState) => {
