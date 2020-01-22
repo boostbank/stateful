@@ -73,8 +73,7 @@ describe("Stateful Tests", () => {
   });
   it("Should rollback the state", () => {
     stateful.modify(store => {
-      store.test = "test";
-      return store;
+      return {test: "test"};
     });
     expect(stateful.getState().test).toBe("test");
     stateful.modify(store => {
@@ -85,7 +84,7 @@ describe("Stateful Tests", () => {
     stateful.rollback();
     expect(stateful.getState().test).toBe("test");
     stateful.rollback();
-    expect(stateful.getState().test).toBe(undefined);
+    expect(stateful.getState().test).toBe("test");
   });
 
   it("Should rollback the state async", done => {
@@ -143,9 +142,8 @@ describe("Stateful Tests", () => {
   });
   it("It should keep adding with no limit", () => {
     const instance = newInstance();
-    instance.modify(store => {
-      store.test = "test";
-      return store;
+    instance.modify(()=> {
+      return {test: "test"};
     });
     expect(instance.getState().test).toBe("test");
     instance.modify(store => {

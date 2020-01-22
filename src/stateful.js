@@ -25,8 +25,8 @@ const getInstance = () => {
 /**
  * @returns {Stateful} A new instance.
  */
-const newInstance = () => {
-  return new Stateful();
+const newInstance = (store = {}) => {
+  return new Stateful().createStore(store);
 };
 
 const pushToStack = (states, maxDepth, newState) => {
@@ -60,7 +60,7 @@ const notifyOne = (subscriber, currentStore, modifyCallback, who) =>{
  * @module Stateful
  */
 class Stateful {
-  constructor() {
+  constructor(currentStore = undefined) {
     this.currentStore = undefined;
     this.maxDepth = -1;
     this.subscribers = [];
@@ -99,8 +99,9 @@ class Stateful {
     if (this.states.length > 1) {
 
       const modifyCallback = typeof callback === "function" ? callback : ()=>{};
-
-      this.states.pop();
+      if(this.states.length > 0){
+        this.states.pop();
+      }
       this.currentStore = this.states[this.states.length - 1];
       notify(this.subscribers, this.currentStore, modifyCallback, who);
     }
@@ -182,7 +183,6 @@ class Stateful {
   clear() {
     this.currentStore = {};
     this.states = [];
-    this.subscribers = [];
     pushToStack(this.states, this.maxDepth, this.currentStore);
   }
 
