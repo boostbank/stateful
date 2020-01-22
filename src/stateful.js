@@ -60,8 +60,9 @@ const notifyOne = (subscriber, currentStore, modifyCallback, who) =>{
  * @module Stateful
  */
 class Stateful {
-  constructor(currentStore = undefined) {
-    this.currentStore = undefined;
+  constructor(currentStore = null) {
+    this.currentStore = currentStore;
+    this.currentSnapshot = null;
     this.maxDepth = -1;
     this.subscribers = [];
     this.states = [];
@@ -82,7 +83,7 @@ class Stateful {
    * @param {number} maxDepth Max number of stores to keep in memory over time. Default -1
    */
   createStore(store = {}, maxDepth = 0) {
-    if (this.currentStore === undefined) {
+    if (this.currentStore === null) {
       this.currentStore = deepCopy(store);
       this.maxDepth = maxDepth;
       pushToStack(this.states, this.maxDepth, this.currentStore);
@@ -149,6 +150,20 @@ class Stateful {
    */
   modifyAsync(who, modifier, callback){
     this.modify(modifier, callback, who);
+  }
+
+  /**
+   * Snapshots the current state.
+   */
+  snapshot(){
+    this.currentSnapshot = deepCopy(this.currentStore);
+  }
+
+  /**
+   * Gets last saved snapshot. If no snapshot returns null.
+   */
+  getSnapshot(){
+    return this.currentSnapshot;
   }
 
   /**
