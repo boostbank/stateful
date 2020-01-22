@@ -138,6 +138,7 @@ class SubStore {
   /**
    * Gets the current snapshot of a substore.
    * @param {string} uid Unique identifier to reference the substore.
+   * @returns {Object} current snapshot of a specific substore.
    */
   getSubSnapshot(uid) {
     let snapshot = null;
@@ -246,6 +247,7 @@ class SubStore {
   /**
    * Gets the current state of a specific substore.
    * @param {string} uid Unique identifier to reference the substore.
+   * @returns {Object} current state of a specific substore.
    */
   getSubState(uid) {
     let state = undefined;

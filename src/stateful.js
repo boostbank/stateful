@@ -195,6 +195,7 @@ class Stateful {
 
   /**
    * Gets last saved snapshot. If no snapshot returns null.
+   * @returns {Object} Current snapshot.
    */
   getSnapshot(){
     return this.currentSnapshot;
