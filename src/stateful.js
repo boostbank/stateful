@@ -56,6 +56,15 @@ const notifyOne = (subscriber, currentStore, modifyCallback, who) =>{
   notify([subscriber], deepCopy(currentStore), modifyCallback, who);
 };
 
+const setState = (stateful, nextStore, modifyCallback, who, snapshot = false)=>{
+  stateful.currentStore = deepCopy(nextStore);
+  if(snapshot){
+    stateful.snapshot();
+  }
+  notify(stateful.subscribers, nextStore, modifyCallback, who);
+  pushToStack(stateful.states, stateful.maxDepth, nextStore)
+}
+
 /**
  * @module Stateful
  */
@@ -71,6 +80,10 @@ class Stateful {
     this.rollbackAsync = this.rollbackAsync.bind(this);
     this.modify = this.modify.bind(this);
     this.modifyAsync = this.modifyAsync.bind(this);
+    this.snapshot = this.snapshot.bind(this);
+    this.getSnapshot = this.getSnapshot.bind(this);
+    this.modifyAndSnapshot = this.modifyAndSnapshot.bind(this);
+    this.modifyAndSnapshotAsync = this.modifyAndSnapshotAsync.bind(this);
     this.subscribe = this.subscribe.bind(this);
     this.unsubscribe = this.unsubscribe.bind(this);
     this.clear = this.clear.bind(this);
@@ -122,8 +135,9 @@ class Stateful {
    * @param {function} modifier Modifier function
    * @param {function} callback The async callback function when done.
    * @param {*} who The object or identifier that is modifying. 
+   * @param {boolean} snapshot Whether or not to snapshot.
    */
-  modify(modifier, callback, who) {
+  modify(modifier, callback, who, snapshot = false) {
     if (modifier && typeof modifier === FUNCTION) {
 
       const modifyCallback = typeof callback === "function" ? callback : ()=>{};
@@ -135,9 +149,7 @@ class Stateful {
         newState !== null &&
         typeof newState === OBJECT
       ) {
-        this.currentStore = deepCopy(newState);
-        notify(this.subscribers, this.currentStore, modifyCallback, who);
-        pushToStack(this.states, this.maxDepth, this.currentStore);
+        setState(this, newState, modifyCallback, who, snapshot);
       }
     }
   }
@@ -148,8 +160,28 @@ class Stateful {
    * @param {function} modifier The modifier function.
    * @param {function} callback The async callback function when done.
    */
-  modifyAsync(who, modifier, callback){
-    this.modify(modifier, callback, who);
+  modifyAsync(who, modifier, callback, snapshot = false){
+    this.modify(modifier, callback, who, snapshot);
+  }
+
+  /**
+   * Modifies state and saves a snapshot.
+   * @param {function} modifier Modifier function
+   * @param {function} callback The async callback function when done.
+   * @param {*} who The object or identifier that is modifying. 
+   */
+  modifyAndSnapshot(modifier, callback, who){
+    this.modify(modifier, callback, who, true);
+  }
+
+  /**
+   * Same as modifyAndSnapshot, but decorated for ease of use. (Saves a snapshot)
+   * @param {*} who The object or identifier that is modifying. 
+   * @param {function} modifier The modifier function.
+   * @param {function} callback The async callback function when done.
+   */
+  modifyAndSnapshotAsync(who, modifier, callback){
+    this.modifyAsync(who, modifier, callback, true);
   }
 
   /**
@@ -164,6 +196,16 @@ class Stateful {
    */
   getSnapshot(){
     return this.currentSnapshot;
+  }
+
+  rollbackToSnapshot(callback, who){
+    if(this.currentSnapshot !== null){
+      setState(this, this.currentSnapshot, callback, who);
+    }
+  }
+
+  rollbackToSnapshotAsync(who, callback){
+    this.rollbackToSnapshot(callback, who)
   }
 
   /**
