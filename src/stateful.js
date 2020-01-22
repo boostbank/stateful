@@ -84,6 +84,8 @@ class Stateful {
     this.getSnapshot = this.getSnapshot.bind(this);
     this.modifyAndSnapshot = this.modifyAndSnapshot.bind(this);
     this.modifyAndSnapshotAsync = this.modifyAndSnapshotAsync.bind(this);
+    this.rollbackToSnapshot = this.rollbackToSnapshot.bind(this);
+    this.rollbackToSnapshotAsync = this.rollbackToSnapshotAsync.bind(this);
     this.subscribe = this.subscribe.bind(this);
     this.unsubscribe = this.unsubscribe.bind(this);
     this.clear = this.clear.bind(this);
