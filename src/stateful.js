@@ -66,7 +66,7 @@ const setState = (stateful, nextStore, modifyCallback, who, snapshot = false)=>{
 }
 
 /**
- * @module Stateful
+ * Class representing a stateful manager.
  */
 class Stateful {
   constructor(currentStore = null) {
@@ -200,12 +200,20 @@ class Stateful {
     return this.currentSnapshot;
   }
 
+  /**
+   * Rolls state back to last saved snapshot.
+   */
   rollbackToSnapshot(callback, who){
     if(this.currentSnapshot !== null){
       setState(this, this.currentSnapshot, callback, who);
     }
   }
 
+  /**
+   * Rolls state back to last saved snapshot async.
+   * @param {*} who The object or identifier that is modifying. 
+   * @param {function} callback The async callback function when done.
+   */
   rollbackToSnapshotAsync(who, callback){
     this.rollbackToSnapshot(callback, who)
   }
