@@ -198,7 +198,7 @@ class Stateful {
    * @returns {Object} Current snapshot.
    */
   getSnapshot(){
-    return this.currentSnapshot;
+    return deepCopy(this.currentSnapshot);
   }
 
   /**
