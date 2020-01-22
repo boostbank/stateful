@@ -37,6 +37,12 @@ class SubStore {
     this.unsubscribeFrom = this.unsubscribeFrom.bind(this);
     this.subClear = this.subClear.bind(this);
     this.subRollback = this.subRollback.bind(this);
+    this.subSnapshot = this.subSnapshot.bind(this);
+    this.getSubSnapshot = this.getSubSnapshot.bind(this);
+    this.subModifyAndSnapshot = this.subModifyAndSnapshot.bind(this);
+    this.subModifyAndSnapshotAsync = this.subModifyAndSnapshotAsync.bind(this);
+    this.subRollbackToSnapshot = this.subRollbackToSnapshot.bind(this);
+    this.subRollbackToSnapshotAsync = this.subRollbackToSnapshotAsync.bind(this);
     this.getSubState = this.getSubState.bind(this);
   }
 
