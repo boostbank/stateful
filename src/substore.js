@@ -93,6 +93,20 @@ class SubStore {
     this.subModify(uid, modifier, callback, who);
   }
 
+  subSnapshot(uid){
+    if (typeof uid === "string") {
+      subStores[uid].snapshot();
+    }
+  }
+
+  getSubSnapshot(uid){
+    let snapshot = null;
+    if (typeof uid === "string") {
+      snapshot = subStores[uid].getSnapshot();
+    }
+    return snapshot;
+  }
+
   subscribeTo(uid, callback) {
     if (typeof uid === "string") {
       if (subStores.hasOwnProperty(uid)) {
